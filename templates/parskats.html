@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Finanšu pārskats</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <h1>Finanšu pārskats</h1>
+
+    <!-- 1. Kopējais bilance -->
+    <h2>1. Kopējais bilance</h2>
+    <p>Kopējais bilance: <span id="total_balance"></span> EUR</p>
+
+    <!-- 2. Kopējie izdevumi un ienākumi šajā mēnesī -->
+    <h2>2. Kopējie izdevumi un ienākumi šajā mēnesī</h2>
+    <p>
+      Kopējie izdevumi šajā mēnesī: <span id="total_expenses_month"></span> EUR
+    </p>
+    <p>
+      Kopējie ienākumi šajā mēnesī: <span id="total_income_month"></span> EUR
+    </p>
+
+    <!-- 3. Kategoriju sadalījums par izvēlēto periodu -->
+    <h2>3. Kategoriju sadalījums par izvēlēto periodu</h2>
+    <form id="date_form">
+      <label for="start_date">Sākuma datums:</label>
+      <input type="date" id="start_date" name="start_date" />
+
+      <label for="end_date">Beigu datums:</label>
+      <input type="date" id="end_date" name="end_date" />
+
+      <button type="button" onclick="fetchData()">Skatīt</button>
+    </form>
+
+    <div id="selected_period_data" style="display: none">
+      <h3>Dati par izvēlēto periodu</h3>
+      <p>Sākuma datums: <span id="start_date_display"></span></p>
+      <p>Beigu datums: <span id="end_date_display"></span></p>
+      <p>Kopējie izdevumi: <span id="total_expenses_selected"></span> EUR</p>
+      <p>Kopējie ienākumi: <span id="total_income_selected"></span> EUR</p>
+
+      <!-- Диаграммы для выбранного периода -->
+      <div id="selected_period_charts" style="display: none">
+        <div style="display: flex; justify-content: space-around">
+          <div style="width: 45%">
+            <h3>Расходы по категориям</h3>
+            <canvas id="expenses_chart_period"></canvas>
+          </div>
+          <div style="width: 45%">
+            <h3>Доходы по категориям</h3>
+            <canvas id="income_chart_period"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Kategoriju sadalījums šajā mēnesī -->
+    <h2>4. Kategoriju sadalījums šajā mēnesī</h2>
+    <div style="display: flex; justify-content: space-around">
+      <div style="width: 45%">
+        <h3>Izdevumi pēc kategorijām</h3>
+        <canvas id="expenses_chart_month"></canvas>
+      </div>
+      <div style="width: 45%">
+        <h3>Ienākumi pēc kategorijām</h3>
+        <canvas id="income_chart_month"></canvas>
+      </div>
+    </div>
+
+    <script>
+      // Функция для получения данных с сервера и обновления страницы
+      function fetchData() {
+        const startDate = document.getElementById("start_date").value;
+        const endDate = document.getElementById("end_date").value;
+
+        fetch("/get_financial_data", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            start_date: startDate,
+            end_date: endDate,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("start_date_display").textContent =
+              startDate;
+            document.getElementById("end_date_display").textContent = endDate;
+            document.getElementById("total_expenses_selected").textContent =
+              data.total_expenses_period.toFixed(2);
+            document.getElementById("total_income_selected").textContent =
+              data.total_income_period.toFixed(2);
+            document.getElementById("selected_period_data").style.display =
+              "block";
+
+            // Обновляем круговые диаграммы для выбранного периода
+            var expensesChartPeriod = new Chart(
+              document.getElementById("expenses_chart_period").getContext("2d"),
+              {
+                type: "pie",
+                data: {
+                  labels: data.expenses_categories_period,
+                  datasets: [
+                    {
+                      label: "Расходы по категориям",
+                      data: data.expenses_amounts_period,
+                      backgroundColor: data.expenses_colors_period,
+                    },
+                  ],
+                },
+              }
+            );
+
+            var incomeChartPeriod = new Chart(
+              document.getElementById("income_chart_period").getContext("2d"),
+              {
+                type: "pie",
+                data: {
+                  labels: data.income_categories_period,
+                  datasets: [
+                    {
+                      label: "Доходы по категориям",
+                      data: data.income_amounts_period,
+                      backgroundColor: data.income_colors_period,
+                    },
+                  ],
+                },
+              }
+            );
+
+            // Показываем диаграммы для выбранного периода
+            document.getElementById("selected_period_charts").style.display =
+              "block";
+          });
+      }
+
+      // Получаем данные за текущий месяц и обновляем страницу
+      fetch("/get_financial_data")
+        .then((response) => response.json())
+        .then((data) => {
+          document.getElementById("total_balance").textContent =
+            data.total_balance_all_time.toFixed(2);
+          document.getElementById("total_expenses_month").textContent =
+            data.total_expenses_month.toFixed(2);
+          document.getElementById("total_income_month").textContent =
+            data.total_income_month.toFixed(2);
+
+          // Обновляем круговые диаграммы за текущий месяц
+          var expensesChartMonth = new Chart(
+            document.getElementById("expenses_chart_month").getContext("2d"),
+            {
+              type: "pie",
+              data: {
+                labels: data.expenses_categories_month,
+                datasets: [
+                  {
+                    label: "Расходы по категориям",
+                    data: data.expenses_amounts_month,
+                    backgroundColor: data.expenses_colors_month,
+                  },
+                ],
+              },
+            }
+          );
+
+          var incomeChartMonth = new Chart(
+            document.getElementById("income_chart_month").getContext("2d"),
+            {
+              type: "pie",
+              data: {
+                labels: data.income_categories_month,
+                datasets: [
+                  {
+                    label: "Доходы по категориям",
+                    data: data.income_amounts_month,
+                    backgroundColor: data.income_colors_month,
+                  },
+                ],
+              },
+            }
+          );
+        });
+    </script>
+  </body>
+</html>

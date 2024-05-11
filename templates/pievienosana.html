@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pievienosana</title>
+  </head>
+  <body>
+    <div>
+      <li><a href="/">Home</a></li>
+      <li><a href="pievienosana">Pievienošana</a></li>
+      <li><a href="parskats">Pārskats</a></li>
+      <li><a href="login">Autorizācija</a></li>
+      <li><a href="logout">Iziet</a></li>
+    </div>
+    <h2>Pievienojiet jaunu darījumu:</h2>
+    <form action="/pievienosana" method="post">
+      <label for="item_type">Veids:</label>
+      <select name="item_type" id="item_type">
+        <option value="income">Ienākums</option>
+        <option value="expense">Izdevums</option></select
+      ><br /><br />
+
+      <label for="category">Категория:</label>
+      <select name="category" id="category">
+        <!-- В зависимости от выбранного вида, JS будет добавлять соответствующие категории --></select
+      ><br /><br />
+
+      <label for="name">Название:</label>
+      <input type="text" id="name" name="name" /><br /><br />
+
+      <label for="amount">Сумма:</label>
+      <input type="number" id="amount" name="amount" step="0.01" /><br /><br />
+
+      <label for="date">Дата:</label>
+      <input type="date" id="date" name="date" /><br /><br />
+
+      <input type="submit" value="Pievienot" />
+    </form>
+
+    <script>
+      // Функция для обновления списка категорий
+      function updateCategories() {
+        var item_typeSelect = document.getElementById("item_type");
+        var categorySelect = document.getElementById("category");
+        var item_type = item_typeSelect.value;
+        // Очищаем список категорий
+        categorySelect.innerHTML = "";
+        // Добавляем новые категории в зависимости от выбранного типа
+        if (item_type === "income") {
+          var categories = [
+            "Darba samaksa",
+            "Investīcijas, dividences",
+            "Papildu ienākumi",
+            "Sociālie izdevumi",
+            "Nekustamā īpašuma nomas ienākumi",
+            "Uzņēmējdarbības vai uzņēmējdarbības ienākumi",
+            "Stipendijas vai granti",
+            "Dāvanas un mantojumi",
+            "Autortiesību honorāri",
+            "Procenti no banku noguldījumiem",
+          ];
+        } else if (item_type === "expense") {
+          var categories = [
+            "Pārtikas izdevumi",
+            "Dzīvesvieta",
+            "Transporta izdevumi",
+            "Veselība",
+            "Izglītība",
+            "Izklaides",
+            "Apģērbs un apavi",
+            "Iekārtošana un ietaisīšana",
+            "Personīgie izdevumi (skaistumkopšana un citi)",
+            "Citi izdevumi",
+          ];
+        }
+        categories.forEach(function (category) {
+          var option = document.createElement("option");
+          option.value = category; // Значение категории - название самой категории
+          option.textContent = category;
+          categorySelect.appendChild(option);
+        });
+      }
+
+      // Вызываем функцию при изменении выбранного типа
+      document
+        .getElementById("item_type")
+        .addEventListener("change", updateCategories);
+
+      // Вызываем функцию в начале, чтобы заполнить список категорий при загрузке страницы
+      updateCategories();
+    </script>
+  </body>
+</html>

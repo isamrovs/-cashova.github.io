@@ -5,6 +5,62 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Finanšu pārskats</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      h1 {
+        text-align: center;
+      }
+
+      h2 {
+        margin-top: 20px;
+      }
+
+      h3 {
+        margin-top: 10px;
+      }
+
+      form {
+        margin-bottom: 20px;
+      }
+
+      input[type="date"] {
+        padding: 5px;
+      }
+
+      button {
+        padding: 5px 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      canvas {
+        max-width: 100%;
+        height: auto;
+      }
+
+      .chart-container {
+        width: 100%;
+        max-width: 500px; /* Ограничение ширины графика */
+        margin: 0 auto; /* Центрирование графика */
+      }
+
+      @media screen and (min-width: 768px) {
+        .chart-container {
+          display: flex;
+          justify-content: space-between;
+        }
+      }
+    </style>
   </head>
   <body>
     <h1>Finanšu pārskats</h1>
@@ -21,6 +77,18 @@
     <p>
       Kopējie ienākumi šajā mēnesī: <span id="total_income_month"></span> EUR
     </p>
+
+    <h2>4. Kategoriju sadalījums šajā mēnesī</h2>
+    <div style="display: flex; justify-content: space-around">
+      <div style="width: 45%">
+        <h3>Izdevumi pēc kategorijām</h3>
+        <canvas id="expenses_chart_month"></canvas>
+      </div>
+      <div style="width: 45%">
+        <h3>Ienākumi pēc kategorijām</h3>
+        <canvas id="income_chart_month"></canvas>
+      </div>
+    </div>
 
     <!-- 3. Kategoriju sadalījums par izvēlēto periodu -->
     <h2>3. Kategoriju sadalījums par izvēlēto periodu</h2>
@@ -45,27 +113,14 @@
       <div id="selected_period_charts" style="display: none">
         <div style="display: flex; justify-content: space-around">
           <div style="width: 45%">
-            <h3>Расходы по категориям</h3>
+            <h3>Izdevumi pēc kategorijām</h3>
             <canvas id="expenses_chart_period"></canvas>
           </div>
           <div style="width: 45%">
-            <h3>Доходы по категориям</h3>
+            <h3>Ienākumi pēc kategorijām</h3>
             <canvas id="income_chart_period"></canvas>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- 4. Kategoriju sadalījums šajā mēnesī -->
-    <h2>4. Kategoriju sadalījums šajā mēnesī</h2>
-    <div style="display: flex; justify-content: space-around">
-      <div style="width: 45%">
-        <h3>Izdevumi pēc kategorijām</h3>
-        <canvas id="expenses_chart_month"></canvas>
-      </div>
-      <div style="width: 45%">
-        <h3>Ienākumi pēc kategorijām</h3>
-        <canvas id="income_chart_month"></canvas>
       </div>
     </div>
 

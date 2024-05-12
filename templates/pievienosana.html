@@ -2,45 +2,227 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pievienosana</title>
-  </head>
+    <script src="https://replit.com/public/js/repl-auth-v2.js"></script>
+    <link href="https://fonts.googleapis.com/" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pievienosana.css') }}?v={{ random }}" />
+    <style>
+ *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body{
+  background-image: radial-gradient(
+      at 9% 89%,
+      hsla(215, 90%, 73%, 1) 0px,
+      transparent 50%
+    ),
+    radial-gradient(at 72% 6%, hsla(331, 74%, 64%, 1) 0px, transparent 50%),
+    radial-gradient(at 24% 19%, hsla(14, 90%, 74%, 1) 0px, transparent 50%),
+    radial-gradient(at 65% 6%, hsla(6, 79%, 76%, 1) 0px, transparent 50%),
+    radial-gradient(at 20% 98%, hsla(316, 72%, 64%, 1) 0px, transparent 50%),
+    radial-gradient(at 44% 9%, hsla(40, 96%, 77%, 1) 0px, transparent 50%),
+    radial-gradient(at 10% 9%, hsla(76, 65%, 63%, 1) 0px, transparent 50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    padding: 0 20px;
+}
+
+.container{
+    display: flex;
+    gap: 20px;
+    background-color: #fff;
+    width: 100%;
+    max-width: 920px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.container img{
+    width: 50%;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.container form{
+    width: 50%;
+}
+
+form h2{
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.form-control{
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.form-control label{
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-control input,
+.form-control textarea{
+    width: 100%;
+    padding: 10px;
+    padding-right: 40px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    outline: none;
+}
+
+button{
+    width: 100%;
+    border: none;
+    padding: 10px;
+    background-color: #77b7cd;
+    color: #fff;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+button:hover{
+    background-color: #295580;
+}
+
+.form-control .icon{
+    position: absolute;
+    right: 10px;
+    top: 71%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: transparent;
+    pointer-events: none;
+}
+
+.form-control.success input,
+.form-control.success textarea{
+    border-color: #2ecc71;
+}
+
+.form-control.success .icon{
+    color: #2ecc71;
+}
+
+.form-control.error input,
+.form-control.error textarea{
+    border-color: #e74c3c;
+}
+
+.form-control.error .icon,
+.form-control.error input::placeholder,
+.form-control.error textarea::placeholder{
+    color: #e74c3c;
+}
+
+.modal{
+    display: none;
+    position: fixed;
+    z-index: 2;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content{
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    width: 80%;
+    border: 1px solid #888;
+    max-width: 500px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.close-button{
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.close-button:hover,
+.close-button:focus{
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+@media screen and (max-width: 920px) {
+    
+    .container img{
+        display: none;
+    }
+
+    .container form{
+        width: 100%;
+    }
+
+}
+    </style>
   <body>
-    <div>
-      <li><a href="/">Home</a></li>
-      <li><a href="pievienosana">Pievienošana</a></li>
-      <li><a href="parskats">Pārskats</a></li>
-      <li><a href="login">Autorizācija</a></li>
-      <li><a href="logout">Iziet</a></li>
-    </div>
-    <h2>Pievienojiet jaunu darījumu:</h2>
-    <form action="/pievienosana" method="post">
-      <label for="item_type">Veids:</label>
-      <select name="item_type" id="item_type">
-        <option value="income">Ienākums</option>
-        <option value="expense">Izdevums</option></select
-      ><br /><br />
-
-      <label for="category">Категория:</label>
-      <select name="category" id="category">
-        <!-- В зависимости от выбранного вида, JS будет добавлять соответствующие категории --></select
-      ><br /><br />
-
-      <label for="name">Название:</label>
-      <input type="text" id="name" name="name" /><br /><br />
-
-      <label for="amount">Сумма:</label>
-      <input type="number" id="amount" name="amount" step="0.01" /><br /><br />
-
-      <label for="date">Дата:</label>
-      <input type="date" id="date" name="date" /><br /><br />
-
-      <input type="submit" value="Pievienot" />
-    </form>
-
-    <script>
-      // Функция для обновления списка категорий
-      function updateCategories() {
+    <div class="container">
+      <img src="/static/css/bg.png">
+      <form id="mainForm" action="/pievienosana" method="post" novalidate>
+          <h2>Pievienojiet jaunu darījumu:</h2>
+          <div class="form-control">
+              <label for="item_type">Veids:</label>
+              <select name="item_type" id="item_type">
+                  <option value="income">Ienākums</option>
+                  <option value="expense">Izdevums</option>
+              </select>
+          </div>
+  
+          <div class="form-control">
+              <label for="category">Категория:</label>
+              <select name="category" id="category"></select>
+          </div>
+  
+          <div class="form-control">
+              <label for="name">Название:</label>
+              <input type="text" id="name" name="name" placeholder="Enter your name" autocomplete="off">
+          </div>
+  
+          <div class="form-control">
+              <label for="amount">Сумма:</label>
+              <input type="number" id="amount" name="amount" step="0.01" placeholder="Enter amount" autocomplete="off">
+          </div>
+  
+          <div class="form-control">
+              <label for="date">Дата:</label>
+              <input type="date" id="date" name="date" placeholder="Enter date" autocomplete="off">
+          </div>
+  
+          <button type="submit">Pievienot</button>
+      </form>
+  </div>
+  
+  <div id="successModal" class="modal">
+      <div class="modal-content">
+          <span class="close-button">&times;</span>
+          <h2>Success!</h2>
+          <p>Your form has been submitted successfully.</p>
+      </div>
+  </div>
+  
+  <script>
+         // Функция для обновления списка категорий
+         function updateCategories() {
         var item_typeSelect = document.getElementById("item_type");
         var categorySelect = document.getElementById("category");
         var item_type = item_typeSelect.value;
@@ -89,6 +271,7 @@
 
       // Вызываем функцию в начале, чтобы заполнить список категорий при загрузке страницы
       updateCategories();
-    </script>
+  </script>
+  
   </body>
 </html>
